@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
 import data from '../data.json';    // ./은 같은 폴더 ../은 상위 폴더
 
-export default function Week2ndPage() {
+export default function MainPage() {
   console.disableYellowBox = true;
   
   let tip = data.tip;
