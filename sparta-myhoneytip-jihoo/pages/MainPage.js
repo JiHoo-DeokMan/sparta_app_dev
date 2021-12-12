@@ -1,15 +1,50 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import { StyleSheet, Text, View, Image, ScrollView, TouchableOpacity } from 'react-native';
-import data from '../data.json';    // ./은 같은 폴더 ../은 상위 폴더
+import data from '../data.json';
+import CardOdd from '../components/CardOdd';
+import CardEven from '../components/CardEven';
+import Loading from '../components/Loading';  // 로딩 화면 불러옴
 
 export default function MainPage() {
   console.disableYellowBox = true;
+
+	//useState 사용법
+
+  //모두 다 useState가 선물해줌
+  //useState()안에 전달되는 값은 state 초기값
+  const [state,setState] = useState([])
+      // state = []
+	//state는 이 컴포넌트에서 관리될 상태 데이터를 담고 있는 변수
+  //setState는 state를 변경시킬 때 사용해야하는 함수
+  // 팁을 관리하는 상태 state.
+
+  const [ready,setReady] = useState(true)
+  // 팁이 준비 상태인지 준비가 끝난 상태인지 관리하기 위해 또 하나의 상태 ready를 추가.
+
+  //컴포넌트에 상태를 여러개 만들어도 됨
+  //관리할 상태이름과 함수는 자유자재로 정의할 수 있음
+  //초기 상태값으로 리스트, 참거짓형, 딕셔너리, 숫자, 문자 등등 다양하게 들어갈 수 있음.
+
   
-  let tip = data.tip;
-  let todayWeather = 10 + 17;
+	//하단의 return 문이 실행되어 화면이 그려진 다음 실행되는 useEffect 함수
+  //내부에서 data.json으로 부터 가져온 데이터를 state 상태에 담고 있음
+  useEffect(()=>{
+    //1초 뒤에 실행되는 코드들이 담겨 있는 함수 (지연함수)
+    setTimeout(()=>{
+        setState(data)    //setState에 데이터를 넣어주고 (변수 state)
+        setReady(false)    //준비가 끝났다 = 'false'
+    },1000) //뒤의 1000 숫자는 1초를 뜻함
+  },[])
+
+  let tip = state.tip;
+//   let tip = data.tip;
+	//data.json 데이터는 state에 담기므로 상태에서 꺼내옴
+	let todayWeather = 10 + 17;
   let todayCondition = "흐림"
 
-  return (
+  //처음 ready 상태값은 true 이므로 ? 물음표 바로 뒤에 값이 반환(그려짐)됨
+  //useEffect로 인해 데이터가 준비되고, ready 값이 false가 되면 : 콜론 뒤의 값이 반환(그려짐)
+  return ready ? <Loading/> :  (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>나만의 꿀팁</Text>
       <Text style={styles.weather}>오늘의 날씨: {todayWeather + '°C ' + todayCondition} </Text>
@@ -33,26 +68,13 @@ export default function MainPage() {
           <Text style={styles.menuText}>꿀팁 찜</Text>
         </TouchableOpacity>
       </ScrollView>
-      <View style={styles.tipContainer}>
-      { 
-        tip.map((content,i)=>{
-          return i % 2 == 0 ? (<View style={styles.tipCardEven} key={i}>
-                    <Image source={{uri:content.image}} style={styles.tipImage} />
-                    <View style={styles.tipContent}>
-                      <Text style={styles.tipTitle} numberOfLines={1}>{content.title}</Text>
-                      <Text style={styles.tipDesc} numberOfLines={3} >{content.desc}</Text>
-                      <Text style={styles.tipDate}>{content.date}</Text>
-                    </View>
-                  </View>) : (<View style={styles.tipCardOdd} key={i}>
-                    <Image source={{uri:content.image}} style={styles.tipImage} />
-                    <View style={styles.tipContent}>
-                      <Text style={styles.tipTitle} numberOfLines={1}>{content.title}</Text>
-                      <Text style={styles.tipDesc} numberOfLines={3} >{content.desc}</Text>
-                      <Text style={styles.tipDate}>{content.date}</Text>
-                    </View>
-                  </View>)
-        })
-      }
+      <View style={styles.cardContainer}>
+        {/* 하나의 카드 영역을 나타내는 View */}
+        { 
+          tip.map((content,i)=>{
+            return i % 2 == 0 ? (<CardEven content={content} key={i}/>) : (<CardOdd content={content} key={i}/>)
+          })
+        }
       </View>
     </ScrollView>
   );
@@ -126,39 +148,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textAlign:"center"
   },
-  tipContainer: {
-  },
-  tipCardEven:{ //카드 짝수 홀수에 따른 스타일 적용
-    backgroundColor:"#FFFCF4",
-    marginTop:30,
-    flexDirection:"row",
-  },
-  tipCardOdd:{ //카드 짝수 홀수에 따른 스타일 적용
-    marginTop:30,
-    flexDirection:"row",
-  },
-  tipImage: {
-    flex: 1,
-    width: "100%", 
-    height: 120, 
-    borderRadius: 10,
-  },
-  tipContent: {
-    flex: 2,
-    height: 120, 
-    marginLeft: 12,
-  },
-  tipTitle: {
-    color: "black",
-    fontSize: 17,
-    fontWeight: "700",
-  },
-  tipDesc: {
-    color: "black",
-    fontSize: 14,
-    },
-  tipDate: {
-    color: "#bbb",
-    fontSize: 10,
+  cardContainer: {
   },
 });
