@@ -1,23 +1,48 @@
-import React from 'react';
+import React,{useEffect}  from 'react';
 import aboutImage from '../assets/aboutImage.png';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import * as Linking from 'expo-linking';
 
-export default function AboutPage() {
-  return (
-      <View style={styles.container}>
-        <Text style={styles.greet}>HI! 스파르타코딩 앱개발 반에 오신것을 환영합니다</Text>
+export default function AboutPage({navigation}) {
 
-        <View style={styles.midContainer}>
-            <Image 
-                source={aboutImage}
-                style={styles.image}
-            />
-            <Text style={styles.h1}>많은 내용을 간결하게 담아내려 노력했습니다!</Text>
-            <Text style={styles.h2}>꼭 완주 하셔서 꼭 여러분 것으로 만들어가시길 바랍니다</Text>
-            <TouchableOpacity style={styles.instagram}><Text style={styles.instagramText}>여러분의 인스타계정</Text></TouchableOpacity>
+    useEffect(()=>{
+            navigation.setOptions({
+                title:'소개 페이지',
+                headerStyle: {
+                    backgroundColor: 'darkblue',
+                    shadowColor: "darkblue",
+                },
+                headerTintColor: "#fff",
+            })
+        },[])
+        
+    const linkBlog = () => {
+        Linking.openURL("https://blog.naver.com/un5166")
+    }
+    const linkInsta = () => {
+        Linking.openURL("https://www.instagram.com/jihoo_deokman/")
+    }
+
+    return (
+        <View style={styles.container}>
+            <StatusBar style="light" />
+            <Text style={styles.greet}>HI! 스파르타코딩 앱개발 반에 오신것을 환영합니다</Text>
+
+            <View style={styles.midContainer}>
+                <Image 
+                    source={aboutImage}
+                    style={styles.image} 
+                />
+                <Text style={styles.h1}>많은 내용을 간결하게 담아내려 노력했습니다!</Text>
+                <Text style={styles.h2}>꼭 완주 하셔서 꼭 여러분 것으로 만들어가시길 바랍니다</Text>
+                <View style={styles.btnGroup}>
+                    <TouchableOpacity style={styles.instagram} onPress={()=>linkBlog()}><Text style={styles.instagramText}>Blog</Text></TouchableOpacity>
+                    <TouchableOpacity style={styles.instagram} onPress={()=>linkInsta()}><Text style={styles.instagramText}>Instagram</Text></TouchableOpacity>
+                </View>
+            </View>
         </View>
-      </View>
-  )
+    )
 }
 
 const styles = StyleSheet.create({
@@ -59,12 +84,18 @@ const styles = StyleSheet.create({
         fontWeight: "700",
         marginTop: 25,
         textAlign: 'center',
-    },    
+    },
+    btnGroup: {
+        height: 120, 
+        flexDirection:"row",
+    },
     instagram: {
-        width: 200, 
+        width: 140, 
         height: 70, 
         backgroundColor: "#f6cc71",
         marginTop: 25,
+        marginRight: 8,
+        marginLeft: 8,
         borderColor:"deeppink",
         borderRadius: 20,
         justifyContent: 'center',
